@@ -28,7 +28,7 @@
         <property name="dataSource" ref="dataSource"/>
 
     </bean>
-
+<!--
     <beans profile="default">
         <jdbc:embedded-database id="dataSource"/>        
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -44,8 +44,9 @@
             </property>
         </bean>
     </beans>
-    
-    <beans profile="prod">
+-->
+    <beans>
+
     <!-- Sustituímos lo comentado por un único bean 
         <bean class="java.net.URI" id="dbUrl">
             <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
@@ -57,11 +58,12 @@
             <property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
         </bean>
     -->
+        <context:property-placeholder location="classpath*:META-INF/database.properties" />
         <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
-            <property name="driverClassName" value="${database.driverClassName}" />
-            <property name="url" value="${database.url}"  />
-            <property name="username" value="${database.username}" />
-            <property name="password" value="${database.password}" />
+            <property name="driverClassName" value="${jdbc.driverClassName}" />
+            <property name="url" value="${jdbc.url}"  />
+            <property name="username" value="${jdbc.username}" />
+            <property name="password" value="${jdbc.password}" />
         </bean>
         
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -71,10 +73,10 @@
             </property>
             <property name="jpaProperties">
                 <props>
-                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                     <prop key="hibernate.show_sql">true</prop>
                     <!-- change this to 'verify' before running as a production app -->
-                        <prop key="hibernate.hbm2ddl.auto">create</prop> 
+                        <prop key="hibernate.hbm2ddl.auto">verify</prop> 
                     <!-- 
                     <prop key="hibernate.hbm2ddl.auto">update</prop>
                     -->
